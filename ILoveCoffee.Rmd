@@ -30,7 +30,7 @@ plot(pressure)
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 ----------------------------------------------
-#TITLE: I <3 TITLE
+#TITLE: I <3 COFFEE
 #change rmd file name to Student ID
 #enable github pages
 
@@ -57,31 +57,43 @@ Type.of.Coffee <- c(rep("Single-Shot Espresso", 2), rep("Double-Shot Espresso", 
 
 Brand <- rep(c("Starbucks" , "Costa"), 14)
 
-Caffeine <- c(33, 100, 66, 200, 99, 325, 66, 141, 66, 241, 33, 100, 50, 210, 66, 185, 66, 200, 66, 325, 66, 325, 99, 325, 136, 256, 2, 2)
+Caffeine <- c(33, 100, 66, 200, 99, 325, 66, 141, 66, 241, 33, 100, 50, 210, 66, 200, 66, 200, 66, 325, 66, 325, 99, 325, 136, 256, 2, 2)
 df <- data.frame(Type.of.Coffee, Brand, Caffeine)
 
+print(df)
+
 # Reorder levels of Type.of.Coffee
-df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = c("Decaf Coffee", "Single-Shot Espresso", "Frappuccino", "Cold Brew", "Double-Shot Espresso", "Cortado", "Mocha", "Flat White", "Cappucino", "Latte", "Iced Latte", "Triple-Shot Espresso", "Americano", "Filter/Brewed Coffee"))
+df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = c("Decaf Coffee", "Single-Shot Espresso", "Frappuccino", "Cold Brew", "Cortado", "Double-Shot Espresso", "Iced Latte", "Latte", "Flat White", "Mocha", "Cappucino", "Triple-Shot Espresso", "Americano", "Filter/Brewed Coffee"))
 
-# Create plot
 ggp <- ggplot(df, aes(x = Type.of.Coffee, y = Caffeine)) +
-  geom_bar(aes(fill = Brand), position = "dodge", stat = "identity", width = 0.7,
-  show_guide = FALSE) +
-  annotation_raster(Starbucks_image, xmin = 2, xmax = 3, 
-    ymin = 200,
-    ymax = 250) +
-  annotation_raster(Costa_image, xmin = 1, xmax = 2, 
-    ymin = 100,
-    ymax = 150) +
-  labs(x = "Type of Coffee", y = "Caffeine (mg)") +
-  scale_y_continuous(expand=c(0,0)) +
-  theme(plot.title = element_text(hjust = 0.5), panel.grid.major = element_blank(), 
-  panel.grid.minor = element_blank(), panel.background = element_blank(), 
-  axis.line = element_line(colour = "black"), aspect.ratio = 3/5) +
-  scale_fill_manual(values = c("#B91345", "#1b703f"))
-#add title  
-
-#Draw plot
+  geom_bar(aes(fill = Brand), position = "dodge", stat = "identity", width = 0.7, show.legend = FALSE) +
+    labs(x = "Type of Coffee*", y = "Caffeine (mg)") +
+    scale_y_continuous(expand=c(0,0)) +
+    scale_fill_manual(values = c("#B91345", "#1b703f")) +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(), 
+          panel.background = element_blank(), 
+          axis.line = element_line(colour = "black"), 
+          aspect.ratio = 3/5, 
+          axis.text.x = element_text(angle = 50, vjust = 0.5,  
+          hjust = 1, margin = margin(t = -35)),
+          axis.title.x = element_text(margin = margin(t = 43)),
+          axis.title.y = element_text(margin = margin(r = 15))) +
+  annotation_raster(Starbucks_image, xmin = 0.72, xmax = 1.57, 
+    ymin = 257,
+    ymax = 285) +
+  annotation_raster(Costa_image, xmin = 0.481, xmax = 1.8, 
+    ymin = 290,
+    ymax = 320) +
+  annotate("text", x = 2:2, y = c(271, 305), label = c("Starbucks", "Costa"), hjust = 0) +
+  ggtitle("Costa VS Starbucks: Caffeine & Size") +
+    labs(subtitle = "Europe & UK, 2023") +
+      theme(plot.title = element_text(margin = margin(b = 6), hjust = 0.5),
+            plot.subtitle = element_text(margin = margin
+            (b = 20), size = 9, hjust = 0.5),
+            plot.margin = unit(c(1,1,2,1), "cm"))
+            
+#Draw Plot
 ggp
 
-
+#*TAKEAWAY, STANDARD OR MEDIUM SIZE
