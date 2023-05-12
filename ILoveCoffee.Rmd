@@ -43,57 +43,77 @@ library(ggplot2)
 library(png)
 library(RCurl)
 library(grid)
-
-#print the raw dataframe
-print(DAAVDATA)
+library(dplyr)
+library(scales)
 
 # Specify image paths and create logos
 #needs RELATIVE PATH 
 Starbucks_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/starbucks_logo.png", native = TRUE)
 Costa_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/costa_logo.png", native = TRUE)
 
+# Print raw dataframe
+print(DAAVDATA)
+
 # Create clean dataframe
-Type.of.Coffee <- c(rep("Single-Shot Espresso", 2), rep("Double-Shot Espresso", 2), rep("Triple-Shot Espresso", 2), rep("Cortado", 2), rep("Flat White", 2), rep("Frappuccino", 2), rep("Cold Brew", 2), rep("Iced Latte", 2), rep("Latte", 2), rep("Cappucino", 2), rep("Mocha", 2), rep("Americano", 2), rep("Filter/Brewed Coffee", 2), rep("Decaf Coffee", 2))
+df <- data.frame(
+  Type.of.Coffee = c(rep(DAAVDATA$'Type of coffee', 2)),
+  Brand = rep(c("Starbucks" , "Costa"), 14),
+  Caffeine = c(DAAVDATA$`Caffeine (mg) Starbucks`, DAAVDATA$`Caffeine (mg) Costa`),
+  Volume = c(DAAVDATA$`Volume (mL) Starbucks`, DAAVDATA$`Volume (mL) Costa`))
 
-Brand <- rep(c("Starbucks" , "Costa"), 14)
+# Define the desired orders
+order_list <- c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14)
+order_list2 <- c(1, 15, 2, 16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12, 26, 13, 27, 14, 28)
 
-Caffeine <- c(33, 100, 66, 200, 99, 325, 66, 141, 66, 241, 33, 100, 50, 210, 66, 200, 66, 200, 66, 325, 66, 325, 99, 325, 136, 256, 2, 2)
-df <- data.frame(Type.of.Coffee, Brand, Caffeine)
+# Re-order the columns using the order_lists
+df <- df %>%
+  mutate(Type.of.Coffee = Type.of.Coffee[order_list],
+  Caffeine = Caffeine[order_list2], 
+  Volume = Volume[order_list2])
 
+# Print Clean data frame
 print(df)
 
-# Reorder levels of Type.of.Coffee
-df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = c("Decaf Coffee", "Single-Shot Espresso", "Frappuccino", "Cold Brew", "Cortado", "Double-Shot Espresso", "Iced Latte", "Latte", "Flat White", "Mocha", "Cappucino", "Triple-Shot Espresso", "Americano", "Filter/Brewed Coffee"))
+# Specify order of Coffee
+df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = unique(df$Type.of.Coffee), ordered = TRUE)
 
-ggp <- ggplot(df, aes(x = Type.of.Coffee, y = Caffeine)) +
-  geom_bar(aes(fill = Brand), position = "dodge", stat = "identity", width = 0.7, show.legend = FALSE) +
-    labs(x = "Type of Coffee*", y = "Caffeine (mg)") +
-    scale_y_continuous(expand=c(0,0)) +
-    scale_fill_manual(values = c("#B91345", "#1b703f")) +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(), 
-          panel.background = element_blank(), 
-          axis.line = element_line(colour = "black"), 
-          aspect.ratio = 3/5, 
-          axis.text.x = element_text(angle = 50, vjust = 0.5,  
-          hjust = 1, margin = margin(t = -35)),
-          axis.title.x = element_text(margin = margin(t = 43)),
-          axis.title.y = element_text(margin = margin(r = 15))) +
-  annotation_raster(Starbucks_image, xmin = 0.72, xmax = 1.57, 
-    ymin = 257,
-    ymax = 285) +
-  annotation_raster(Costa_image, xmin = 0.481, xmax = 1.8, 
-    ymin = 290,
-    ymax = 320) +
-  annotate("text", x = 2:2, y = c(271, 305), label = c("Starbucks", "Costa"), hjust = 0) +
-  ggtitle("Costa VS Starbucks: Caffeine & Size") +
+#Create Plot
+ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
+  geom_bar(aes(y = Volume / 1, fill = ifelse(Brand == "Starbucks", "C", "D")), 
+           position = "dodge", stat="identity", width = 0.7, alpha=.5, show.legend = FALSE) +
+  geom_bar(aes(fill = ifelse(Brand == "Starbucks", "A", "B")), 
+           position = "dodge", stat = "identity", width = 0.5, show.legend = FALSE) +
+  scale_y_continuous(name = "Caffeine (mg)", limits = c(0, 630), expand =c(0,0), breaks = seq(0, 500, by = 50),
+                     sec.axis = sec_axis(~.*1, name="Volume (mL)")) +
+  labs(x = "Type of Coffee*") +
+  scale_fill_manual(values = c("A" = "#1b703f", "B" = "#B91345", "C" = "#6F4E37", "D" = "#A37E53")) +
+  theme(aspect.ratio = 3/5,
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        axis.line = element_line(colour = "black"), 
+        axis.text.x = element_text(angle = 50, vjust = 0.5,  
+        hjust = 1, margin = margin(t = -30)),
+        axis.title.x = element_text(margin = margin(t = 43)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.y.right = element_text(margin = unit(c(0, 0, 0, 5), 'mm'))) +
+   annotation_raster(Starbucks_image, xmin = 0.73, xmax = 1.48, 
+      ymin = 525, ymax = 575) +
+   annotation_raster(Costa_image, xmin = 0.491, xmax = 1.73, 
+      ymin = 580, ymax = 630) +
+   annotate("text", x = 1.8:1.8, y = c(550, 605), label = c("Starbucks", "Costa"), hjust = 0) +
+   ggtitle("Costa VS Starbucks: Caffeine & Size") +
     labs(subtitle = "Europe & UK, 2023") +
       theme(plot.title = element_text(margin = margin(b = 6), hjust = 0.5),
             plot.subtitle = element_text(margin = margin
             (b = 20), size = 9, hjust = 0.5),
             plot.margin = unit(c(1,1,2,1), "cm"))
-            
-#Draw Plot
-ggp
+
+#INSERT VOLUME LEGEND
+# Display the plot
+print(ggp)
 
 #*TAKEAWAY, STANDARD OR MEDIUM SIZE
+
+
+

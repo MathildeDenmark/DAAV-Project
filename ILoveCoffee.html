@@ -11,7 +11,7 @@
 
 <meta name="author" content="Mathilde Klitgaard" />
 
-<meta name="date" content="2023-05-12" />
+<meta name="date" content="2023-05-13" />
 
 <title>PSY6422 Project</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">PSY6422 Project</h1>
 <h4 class="author">Mathilde Klitgaard</h4>
-<h4 class="date">2023-05-12</h4>
+<h4 class="date">2023-05-13</h4>
 
 </div>
 
@@ -387,8 +387,8 @@ plot.</p>
 github pages</p>
 <p>#<img src="Figures/image.png" /> to insert a photo in RMD file</p>
 <p>#Load packages library(tidyverse) library(gapminder) library(ggplot2)
-library(png) library(RCurl) library(grid)</p>
-<p>#print the raw dataframe print(DAAVDATA)</p>
+library(png) library(RCurl) library(grid) library(dplyr)
+library(scales)</p>
 </div>
 <div id="specify-image-paths-and-create-logos" class="section level1">
 <h1>Specify image paths and create logos</h1>
@@ -398,47 +398,66 @@ readPNG(“C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project
 readPNG(“C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project
 2023/DAAVProject/costa_logo.png”, native = TRUE)</p>
 </div>
+<div id="print-raw-dataframe" class="section level1">
+<h1>Print raw dataframe</h1>
+<p>print(DAAVDATA)</p>
+</div>
 <div id="create-clean-dataframe" class="section level1">
 <h1>Create clean dataframe</h1>
-<p>Type.of.Coffee &lt;- c(rep(“Single-Shot Espresso”, 2),
-rep(“Double-Shot Espresso”, 2), rep(“Triple-Shot Espresso”, 2),
-rep(“Cortado”, 2), rep(“Flat White”, 2), rep(“Frappuccino”, 2),
-rep(“Cold Brew”, 2), rep(“Iced Latte”, 2), rep(“Latte”, 2),
-rep(“Cappucino”, 2), rep(“Mocha”, 2), rep(“Americano”, 2),
-rep(“Filter/Brewed Coffee”, 2), rep(“Decaf Coffee”, 2))</p>
-<p>Brand &lt;- rep(c(“Starbucks” , “Costa”), 14)</p>
-<p>Caffeine &lt;- c(33, 100, 66, 200, 99, 325, 66, 141, 66, 241, 33,
-100, 50, 210, 66, 200, 66, 200, 66, 325, 66, 325, 99, 325, 136, 256, 2,
-2) df &lt;- data.frame(Type.of.Coffee, Brand, Caffeine)</p>
+<p>df &lt;- data.frame( Type.of.Coffee = c(rep(DAAVDATA<span class="math inline">\(&#39;Type of coffee&#39;, 2)),  Brand =
+rep(c(&quot;Starbucks&quot; , &quot;Costa&quot;), 14),  Caffeine =
+c(DAAVDATA\)</span><code>Caffeine (mg) Starbucks</code>, DAAVDATA<span class="math inline">\(`Caffeine (mg) Costa`),  Volume =
+c(DAAVDATA\)</span><code>Volume (mL) Starbucks</code>,
+DAAVDATA$<code>Volume (mL) Costa</code>))</p>
+</div>
+<div id="define-the-desired-orders" class="section level1">
+<h1>Define the desired orders</h1>
+<p>order_list &lt;- c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9,
+9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14) order_list2 &lt;- c(1, 15, 2,
+16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12,
+26, 13, 27, 14, 28)</p>
+</div>
+<div id="re-order-the-columns-using-the-order_lists" class="section level1">
+<h1>Re-order the columns using the order_lists</h1>
+<p>df &lt;- df %&gt;% mutate(Type.of.Coffee =
+Type.of.Coffee[order_list], Caffeine = Caffeine[order_list2], Volume =
+Volume[order_list2])</p>
+</div>
+<div id="print-clean-data-frame" class="section level1">
+<h1>Print Clean data frame</h1>
 <p>print(df)</p>
 </div>
-<div id="reorder-levels-of-type.of.coffee" class="section level1">
-<h1>Reorder levels of Type.of.Coffee</h1>
+<div id="specify-order-of-coffee" class="section level1">
+<h1>Specify order of Coffee</h1>
 <p>df<span class="math inline">\(Type.of.Coffee &lt;-
-factor(df\)</span>Type.of.Coffee, levels = c(“Decaf Coffee”,
-“Single-Shot Espresso”, “Frappuccino”, “Cold Brew”, “Cortado”,
-“Double-Shot Espresso”, “Iced Latte”, “Latte”, “Flat White”, “Mocha”,
-“Cappucino”, “Triple-Shot Espresso”, “Americano”, “Filter/Brewed
-Coffee”))</p>
-<p>ggp &lt;- ggplot(df, aes(x = Type.of.Coffee, y = Caffeine)) +
-geom_bar(aes(fill = Brand), position = “dodge”, stat = “identity”, width
-= 0.7, show.legend = FALSE) + labs(x = “Type of Coffee*“, y =”Caffeine
-(mg)“) + scale_y_continuous(expand=c(0,0)) + scale_fill_manual(values =
-c(”#B91345”, “#1b703f”)) + theme(panel.grid.major = element_blank(),
-panel.grid.minor = element_blank(), panel.background = element_blank(),
-axis.line = element_line(colour = “black”), aspect.ratio = 3/5,
-axis.text.x = element_text(angle = 50, vjust = 0.5,<br />
-hjust = 1, margin = margin(t = -35)), axis.title.x = element_text(margin
-= margin(t = 43)), axis.title.y = element_text(margin = margin(r = 15)))
-+ annotation_raster(Starbucks_image, xmin = 0.72, xmax = 1.57, ymin =
-257, ymax = 285) + annotation_raster(Costa_image, xmin = 0.481, xmax =
-1.8, ymin = 290, ymax = 320) + annotate(“text”, x = 2:2, y = c(271,
-305), label = c(“Starbucks”, “Costa”), hjust = 0) + ggtitle(“Costa VS
+factor(df\)</span>Type.of.Coffee, levels = unique(df$Type.of.Coffee),
+ordered = TRUE)</p>
+<p>#Create Plot ggp &lt;- ggplot(df, aes(fill=Brand, y=Caffeine,
+x=Type.of.Coffee)) + geom_bar(aes(y = Volume / 1, fill = ifelse(Brand ==
+“Starbucks”, “C”, “D”)), position = “dodge”, stat=“identity”, width =
+0.7, alpha=.5, show.legend = FALSE) + geom_bar(aes(fill = ifelse(Brand
+== “Starbucks”, “A”, “B”)), position = “dodge”, stat = “identity”, width
+= 0.5, show.legend = FALSE) + scale_y_continuous(name = “Caffeine (mg)”,
+limits = c(0, 630), expand =c(0,0), breaks = seq(0, 500, by = 50),
+sec.axis = sec_axis(~.<em>1, name=“Volume (mL)”)) + labs(x = “Type of
+Coffee</em>”) + scale_fill_manual(values = c(“A” = “#1b703f”, “B” =
+“#B91345”, “C” = “#6F4E37”, “D” = “#A37E53”)) + theme(aspect.ratio =
+3/5, panel.grid.major = element_blank(), panel.grid.minor =
+element_blank(), panel.background = element_blank(), axis.line =
+element_line(colour = “black”), axis.text.x = element_text(angle = 50,
+vjust = 0.5,<br />
+hjust = 1, margin = margin(t = -30)), axis.title.x = element_text(margin
+= margin(t = 43)), axis.title.y = element_text(margin = margin(r = 15)),
+axis.title.y.right = element_text(margin = unit(c(0, 0, 0, 5), ‘mm’))) +
+annotation_raster(Starbucks_image, xmin = 0.73, xmax = 1.48, ymin = 525,
+ymax = 575) + annotation_raster(Costa_image, xmin = 0.491, xmax = 1.73,
+ymin = 580, ymax = 630) + annotate(“text”, x = 1.8:1.8, y = c(550, 605),
+label = c(“Starbucks”, “Costa”), hjust = 0) + ggtitle(“Costa VS
 Starbucks: Caffeine &amp; Size”) + labs(subtitle = “Europe &amp; UK,
 2023”) + theme(plot.title = element_text(margin = margin(b = 6), hjust =
 0.5), plot.subtitle = element_text(margin = margin (b = 20), size = 9,
 hjust = 0.5), plot.margin = unit(c(1,1,2,1), “cm”))</p>
-<p>#Draw Plot ggp</p>
+<p>#INSERT VOLUME LEGEND # Display the plot print(ggp)</p>
 <p>#*TAKEAWAY, STANDARD OR MEDIUM SIZE</p>
 </div>
 
