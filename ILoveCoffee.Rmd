@@ -43,28 +43,38 @@ library(ggplot2)
 library(png)
 library(RCurl)
 library(grid)
-
-#print the raw dataframe
-print(DAAVDATA)
+library(dplyr)
 
 # Specify image paths and create logos
 #needs RELATIVE PATH 
 Starbucks_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/starbucks_logo.png", native = TRUE)
 Costa_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/costa_logo.png", native = TRUE)
 
+# Print raw dataframe
+print(DAAVDATA)
+
 # Create clean dataframe
-Type.of.Coffee <- c(rep("Single-Shot Espresso", 2), rep("Double-Shot Espresso", 2), rep("Triple-Shot Espresso", 2), rep("Cortado", 2), rep("Flat White", 2), rep("Frappuccino", 2), rep("Cold Brew", 2), rep("Iced Latte", 2), rep("Latte", 2), rep("Cappucino", 2), rep("Mocha", 2), rep("Americano", 2), rep("Filter/Brewed Coffee", 2), rep("Decaf Coffee", 2))
+df <- data.frame(
+  Type.of.Coffee = c(rep(DAAVDATA$'Type of coffee', 2)),
+  Brand = rep(c("Starbucks" , "Costa"), 14),
+  Caffeine = c(DAAVDATA$`Caffeine (mg) Starbucks`, DAAVDATA$`Caffeine (mg) Costa`))
+  
+# Define the desired orders
+order_list <- c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14)
+order_list2 <- c(1, 15, 2, 16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12, 26, 13, 27, 14, 28)
 
-Brand <- rep(c("Starbucks" , "Costa"), 14)
+# Re-order the column using the order_list
+df <- df %>%
+  mutate(Type.of.Coffee = Type.of.Coffee[order_list],
+  Caffeine = Caffeine[order_list2])
 
-Caffeine <- c(33, 100, 66, 200, 99, 325, 66, 141, 66, 241, 33, 100, 50, 210, 66, 200, 66, 200, 66, 325, 66, 325, 99, 325, 136, 256, 2, 2)
-df <- data.frame(Type.of.Coffee, Brand, Caffeine)
-
+# Print Caffeine data frame
 print(df)
 
-# Reorder levels of Type.of.Coffee
-df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = c("Decaf Coffee", "Single-Shot Espresso", "Frappuccino", "Cold Brew", "Cortado", "Double-Shot Espresso", "Iced Latte", "Latte", "Flat White", "Mocha", "Cappucino", "Triple-Shot Espresso", "Americano", "Filter/Brewed Coffee"))
+# Specify order of Coffee
+df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = unique(df$Type.of.Coffee), ordered = TRUE)
 
+#Create Plot
 ggp <- ggplot(df, aes(x = Type.of.Coffee, y = Caffeine)) +
   geom_bar(aes(fill = Brand), position = "dodge", stat = "identity", width = 0.7, show.legend = FALSE) +
     labs(x = "Type of Coffee*", y = "Caffeine (mg)") +
@@ -92,8 +102,26 @@ ggp <- ggplot(df, aes(x = Type.of.Coffee, y = Caffeine)) +
             plot.subtitle = element_text(margin = margin
             (b = 20), size = 9, hjust = 0.5),
             plot.margin = unit(c(1,1,2,1), "cm"))
-            
-#Draw Plot
+
+# Create the second data frame
+df2 <- data.frame(select(df, Type.of.Coffee), select(df, Brand), Volume = c(DAAVDATA$`Volume (mL) Starbucks`, DAAVDATA$`Volume (mL) Costa`))
+
+Volume <- df2$Volume
+
+# Re-order the column using the order_list
+df2 <- df2 %>%
+  mutate(Volume = Volume[order_list2])
+
+# Print Volume data frame
+print(df2)
+
+# Specify order of Coffee
+df2$Type.of.Coffee <- factor(df2$Type.of.Coffee, levels = unique(df2$Type.of.Coffee), ordered = TRUE)
+
+# Add the second barplot with the second y-axis
+ggp <- ggp + geom_bar(data = df2, aes(x = Type.of.Coffee, y = Volume, fill = Brand), position = "dodge", stat = "identity", alpha = 0.5)
+
+# Display the plot
 ggp
 
 #*TAKEAWAY, STANDARD OR MEDIUM SIZE
