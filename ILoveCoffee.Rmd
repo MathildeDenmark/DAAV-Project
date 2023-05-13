@@ -51,6 +51,9 @@ library(scales)
 Starbucks_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/starbucks_logo.png", native = TRUE)
 Costa_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/costa_logo.png", native = TRUE)
 
+starbucks_cup <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/starbucks_cup.png", native = TRUE)
+costa_cup <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/costa_cup.png", native = TRUE)
+
 # Print raw dataframe
 print(DAAVDATA)
 
@@ -80,13 +83,13 @@ df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = unique(df$Type.of.Coffee
 #Create Plot
 ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
   geom_bar(aes(y = Volume / 1, fill = ifelse(Brand == "Starbucks", "C", "D")), 
-           position = "dodge", stat="identity", width = 0.7, alpha=.5, show.legend = FALSE) +
+           position = "dodge", stat="identity", width = 0.8, alpha=.5, show.legend = FALSE) +
   geom_bar(aes(fill = ifelse(Brand == "Starbucks", "A", "B")), 
            position = "dodge", stat = "identity", width = 0.5, show.legend = FALSE) +
-  scale_y_continuous(name = "Caffeine (mg)", limits = c(0, 630), expand =c(0,0), breaks = seq(0, 500, by = 50),
-                     sec.axis = sec_axis(~.*1, name="Volume (mL)")) +
+  scale_y_continuous(name = "Caffeine (mg)", limits = c(0, 670), expand =c(0,0), breaks = seq(0, 500, by = 50),
+                     sec.axis = sec_axis(~.*1, name="Volume (mL)", breaks = seq(0, 500, by = 50))) +
   labs(x = "Type of Coffee*") +
-  scale_fill_manual(values = c("A" = "#1b703f", "B" = "#B91345", "C" = "#6F4E37", "D" = "#A37E53")) +
+  scale_fill_manual(values = c("A" = "#1b703f", "B" = "#B91345", "C" = "#63330b", "D" = "#996633")) +
   theme(aspect.ratio = 3/5,
         panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
@@ -94,22 +97,28 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
         axis.line = element_line(colour = "black"), 
         axis.text.x = element_text(angle = 50, vjust = 0.5,  
         hjust = 1, margin = margin(t = -30)),
-        axis.title.x = element_text(margin = margin(t = 43)),
+        axis.title.x = element_text(margin = margin(t = 43), size = 12),
         axis.title.y = element_text(margin = margin(r = 15)),
         axis.title.y.right = element_text(margin = unit(c(0, 0, 0, 5), 'mm'))) +
-   annotation_raster(Starbucks_image, xmin = 0.73, xmax = 1.48, 
-      ymin = 525, ymax = 575) +
-   annotation_raster(Costa_image, xmin = 0.491, xmax = 1.73, 
-      ymin = 580, ymax = 630) +
-   annotate("text", x = 1.8:1.8, y = c(550, 605), label = c("Starbucks", "Costa"), hjust = 0) +
+   annotation_raster(Starbucks_image, xmin = 0.73, xmax = 1.39, 
+      ymin = 521, ymax = 573) +
+   annotation_raster(Costa_image, xmin = 0.491, xmax = 1.63, 
+      ymin = 578, ymax = 630) +
+   annotation_raster(starbucks_cup, xmin = 13.5, xmax = 14.5, 
+      ymin = 515, ymax = 570) +
+   annotation_raster(costa_cup, xmin = 13.5, xmax = 14.5, 
+      ymin = 575, ymax = 630) +
+   annotate("text", x = 1.7:1.7, y = c(550, 605), label = c("Starbucks", "Costa"), hjust = 0) +
+   annotate("text", x = 13.5:13.5, y = c(543, 603), label = c("Starbucks", "Costa"), hjust = 1) +
+   annotate("text", x = 0.8, y = 659, label = "Brand", hjust = 0, fontface = "bold") +
+   annotate("text", x = 14.2, y = 658, label = "Brand Volume", hjust = 1, fontface = "bold") +
    ggtitle("Costa VS Starbucks: Caffeine & Size") +
     labs(subtitle = "Europe & UK, 2023") +
-      theme(plot.title = element_text(margin = margin(b = 6), hjust = 0.5),
+      theme(plot.title = element_text(margin = margin(b = 6), hjust = 0.5, size = 14, face = "bold"),
             plot.subtitle = element_text(margin = margin
-            (b = 20), size = 9, hjust = 0.5),
+            (b = 20), size = 11, hjust = 0.5),
             plot.margin = unit(c(1,1,2,1), "cm"))
-
-#INSERT VOLUME LEGEND
+            
 # Display the plot
 print(ggp)
 
