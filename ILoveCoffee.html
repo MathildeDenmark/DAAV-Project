@@ -387,8 +387,12 @@ plot.</p>
 github pages</p>
 <p>#<img src="Figures/image.png" /> to insert a photo in RMD file</p>
 <p>#Load packages library(tidyverse) library(gapminder) library(ggplot2)
+<<<<<<< HEAD
 library(png) library(RCurl) library(grid) library(dplyr)
 library(scales)</p>
+=======
+library(png) library(RCurl) library(grid) library(dplyr)</p>
+>>>>>>> 619f4b9e34d573f0e086cf3b23e361257f30f38e
 </div>
 <div id="specify-image-paths-and-create-logos" class="section level1">
 <h1>Specify image paths and create logos</h1>
@@ -406,9 +410,14 @@ readPNG(“C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project
 <h1>Create clean dataframe</h1>
 <p>df &lt;- data.frame( Type.of.Coffee = c(rep(DAAVDATA<span class="math inline">\(&#39;Type of coffee&#39;, 2)),  Brand =
 rep(c(&quot;Starbucks&quot; , &quot;Costa&quot;), 14),  Caffeine =
+<<<<<<< HEAD
 c(DAAVDATA\)</span><code>Caffeine (mg) Starbucks</code>, DAAVDATA<span class="math inline">\(`Caffeine (mg) Costa`),  Volume =
 c(DAAVDATA\)</span><code>Volume (mL) Starbucks</code>,
 DAAVDATA$<code>Volume (mL) Costa</code>))</p>
+=======
+c(DAAVDATA\)</span><code>Caffeine (mg) Starbucks</code>,
+DAAVDATA$<code>Caffeine (mg) Costa</code>))</p>
+>>>>>>> 619f4b9e34d573f0e086cf3b23e361257f30f38e
 </div>
 <div id="define-the-desired-orders" class="section level1">
 <h1>Define the desired orders</h1>
@@ -417,6 +426,7 @@ DAAVDATA$<code>Volume (mL) Costa</code>))</p>
 16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12,
 26, 13, 27, 14, 28)</p>
 </div>
+<<<<<<< HEAD
 <div id="re-order-the-columns-using-the-order_lists" class="section level1">
 <h1>Re-order the columns using the order_lists</h1>
 <p>df &lt;- df %&gt;% mutate(Type.of.Coffee =
@@ -425,6 +435,15 @@ Volume[order_list2])</p>
 </div>
 <div id="print-clean-data-frame" class="section level1">
 <h1>Print Clean data frame</h1>
+=======
+<div id="re-order-the-column-using-the-order_list" class="section level1">
+<h1>Re-order the column using the order_list</h1>
+<p>df &lt;- df %&gt;% mutate(Type.of.Coffee =
+Type.of.Coffee[order_list], Caffeine = Caffeine[order_list2])</p>
+</div>
+<div id="print-caffeine-data-frame" class="section level1">
+<h1>Print Caffeine data frame</h1>
+>>>>>>> 619f4b9e34d573f0e086cf3b23e361257f30f38e
 <p>print(df)</p>
 </div>
 <div id="specify-order-of-coffee" class="section level1">
@@ -432,6 +451,7 @@ Volume[order_list2])</p>
 <p>df<span class="math inline">\(Type.of.Coffee &lt;-
 factor(df\)</span>Type.of.Coffee, levels = unique(df$Type.of.Coffee),
 ordered = TRUE)</p>
+<<<<<<< HEAD
 <p>#Create Plot ggp &lt;- ggplot(df, aes(fill=Brand, y=Caffeine,
 x=Type.of.Coffee)) + geom_bar(aes(y = Volume / 1, fill = ifelse(Brand ==
 “Starbucks”, “C”, “D”)), position = “dodge”, stat=“identity”, width =
@@ -453,11 +473,62 @@ annotation_raster(Starbucks_image, xmin = 0.73, xmax = 1.48, ymin = 525,
 ymax = 575) + annotation_raster(Costa_image, xmin = 0.491, xmax = 1.73,
 ymin = 580, ymax = 630) + annotate(“text”, x = 1.8:1.8, y = c(550, 605),
 label = c(“Starbucks”, “Costa”), hjust = 0) + ggtitle(“Costa VS
+=======
+<p>#Create Plot ggp &lt;- ggplot(df, aes(x = Type.of.Coffee, y =
+Caffeine)) + geom_bar(aes(fill = Brand), position = “dodge”, stat =
+“identity”, width = 0.7, show.legend = FALSE) + labs(x = “Type of
+Coffee*“, y =”Caffeine (mg)“) + scale_y_continuous(expand=c(0,0)) +
+scale_fill_manual(values = c(”#B91345”, “#1b703f”)) +
+theme(panel.grid.major = element_blank(), panel.grid.minor =
+element_blank(), panel.background = element_blank(), axis.line =
+element_line(colour = “black”), aspect.ratio = 3/5, axis.text.x =
+element_text(angle = 50, vjust = 0.5,<br />
+hjust = 1, margin = margin(t = -35)), axis.title.x = element_text(margin
+= margin(t = 43)), axis.title.y = element_text(margin = margin(r = 15)))
++ annotation_raster(Starbucks_image, xmin = 0.72, xmax = 1.57, ymin =
+257, ymax = 285) + annotation_raster(Costa_image, xmin = 0.481, xmax =
+1.8, ymin = 290, ymax = 320) + annotate(“text”, x = 2:2, y = c(271,
+305), label = c(“Starbucks”, “Costa”), hjust = 0) + ggtitle(“Costa VS
+>>>>>>> 619f4b9e34d573f0e086cf3b23e361257f30f38e
 Starbucks: Caffeine &amp; Size”) + labs(subtitle = “Europe &amp; UK,
 2023”) + theme(plot.title = element_text(margin = margin(b = 6), hjust =
 0.5), plot.subtitle = element_text(margin = margin (b = 20), size = 9,
 hjust = 0.5), plot.margin = unit(c(1,1,2,1), “cm”))</p>
+<<<<<<< HEAD
 <p>#INSERT VOLUME LEGEND # Display the plot print(ggp)</p>
+=======
+</div>
+<div id="create-the-second-data-frame" class="section level1">
+<h1>Create the second data frame</h1>
+<p>df2 &lt;- data.frame(select(df, Type.of.Coffee), select(df, Brand),
+Volume = c(DAAVDATA<span class="math inline">\(`Volume (mL) Starbucks`,
+DAAVDATA\)</span><code>Volume (mL) Costa</code>))</p>
+<p>Volume &lt;- df2$Volume</p>
+</div>
+<div id="re-order-the-column-using-the-order_list-1" class="section level1">
+<h1>Re-order the column using the order_list</h1>
+<p>df2 &lt;- df2 %&gt;% mutate(Volume = Volume[order_list2])</p>
+</div>
+<div id="print-volume-data-frame" class="section level1">
+<h1>Print Volume data frame</h1>
+<p>print(df2)</p>
+</div>
+<div id="specify-order-of-coffee-1" class="section level1">
+<h1>Specify order of Coffee</h1>
+<p>df2<span class="math inline">\(Type.of.Coffee &lt;-
+factor(df2\)</span>Type.of.Coffee, levels = unique(df2$Type.of.Coffee),
+ordered = TRUE)</p>
+</div>
+<div id="add-the-second-barplot-with-the-second-y-axis" class="section level1">
+<h1>Add the second barplot with the second y-axis</h1>
+<p>ggp &lt;- ggp + geom_bar(data = df2, aes(x = Type.of.Coffee, y =
+Volume, fill = Brand), position = “dodge”, stat = “identity”, alpha =
+0.5)</p>
+</div>
+<div id="display-the-plot" class="section level1">
+<h1>Display the plot</h1>
+<p>ggp</p>
+>>>>>>> 619f4b9e34d573f0e086cf3b23e361257f30f38e
 <p>#*TAKEAWAY, STANDARD OR MEDIUM SIZE</p>
 </div>
 
