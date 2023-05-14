@@ -1,11 +1,12 @@
 ---
-title: "PSY6422 - Data Management and Visualisation Project"
+title: "PSY6422 - Project"
 author: "ID: 220251464"
 output: html_document
 ---
-#![](Figures/image.png) to insert a photo in RMD file  
+![drinks image](images/drinks_image.png)
 #enable github pages
-  
+#saves key visualisations as files
+
 # Background
   
 ## Data Origins
@@ -18,6 +19,7 @@ in plain English, a simple statement of what question(s) your visualisation will
 # Data Preparation
 ## My Libraries
 #Load packages
+```{r}.
 library(tidyverse)
 library(gapminder)
 library(ggplot2)
@@ -28,29 +30,36 @@ library(dplyr)
 library(scales)
 library(showtext)
 library(here)  
+```
 
 ## Cleaning the data
 steps taken to clean the data, exclude outliers, create summary statistics, grouped variables, etc
 show the first few rows of the processed data, if possible
 showing the code which does this were relevant  
 
+```{r}.
 #Specify image relative paths for logos and legend icons
 Starbucks_image <- readPNG((here::here("images", "starbucks_logo.png")), native = TRUE)
 Costa_image <- readPNG((here::here("images", "costa_logo.png")), native = TRUE)  
 
 starbucks_cup <- readPNG((here::here("images", "starbucks_cup.png")), native = TRUE)
 costa_cup <- readPNG((here::here("images", "costa_cup.png")), native = TRUE)  
-
+```
+```{r}.
 #Print raw data
-print(DAAVDATA)  
+print(DAAVDATA)
+``` 
 
+```{r}.
 #Create clean dataframe
 df <- data.frame(
   Type.of.Coffee = c(rep(DAAVDATA$'Type of coffee', 2)),
   Brand = rep(c("Starbucks" , "Costa"), 14),
   Caffeine = c(DAAVDATA$`Caffeine (mg) Starbucks`, DAAVDATA$`Caffeine (mg) Costa`),
-  Volume = c(DAAVDATA$`Volume (mL) Starbucks`, DAAVDATA$`Volume (mL) Costa`))  
+  Volume = c(DAAVDATA$`Volume (mL) Starbucks`, DAAVDATA$`Volume (mL) Costa`))
+```  
 
+```{r}.
 #Define the desired orders
 order_list <- c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14)
 order_list2 <- c(1, 15, 2, 16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12, 26, 13, 27, 14, 28)  
@@ -65,65 +74,93 @@ df <- df %>%
          Caffeine = reorder_vec(Caffeine, order_list2), 
          Volume = reorder_vec(Volume, order_list2))  
 
-#Print Clean data frame
+
+#Print Clean data frame 
 print(df)  
 
-#Specify order of Coffee
+#Specify order of Coffee  
 df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = unique(df$Type.of.Coffee), ordered = TRUE)  
+```
 
 # Visualisation
 graph or graphs documentation explaining any motivation (although good graph labelling is better than explanation in the accompanying text)
 code for producing them  
 
-#Load new custom font for showtext package
-font_add_google(name = "Source Sans Pro", family = "Source Sans Pro")  
+```{r}.
+font_add_google(name = "Source Sans Pro", family = "Source Sans Pro") 
+#Load new custom font for showtext package  
 
 showtext_auto()
 #Automatically use showtext for all plots  
+```
 
 ## The Plot
-ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
-  geom_bar(aes(y = Volume / 1, fill = ifelse(Brand == "Starbucks", "C", "D")), 
-           position = "dodge", stat="identity", width = 0.8, alpha=.5, show.legend = FALSE) +
-  geom_bar(aes(fill = ifelse(Brand == "Starbucks", "A", "B")), 
-           position = "dodge", stat = "identity", width = 0.5, show.legend = FALSE) +
-  scale_y_continuous(name = "Caffeine (mg)", limits = c(0, 670), expand =c(0,0), breaks = seq(0, 500, by = 50),
-                     sec.axis = sec_axis(~.*1, name="Volume (mL)", breaks = seq(0, 500, by = 50))) +
-  labs(x = "Type of Coffee*") +
-  scale_fill_manual(values = c("A" = "#1b703f", "B" = "#B91345", "C" = "#63330b", "D" = "#996633")) +
-  theme(aspect.ratio = 3/5,
-        panel.grid.major = element_blank(), 
+```{r}.
+ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +   #creating baseplot
+  geom_bar(aes(y = Volume / 1,                                       #adding volume barplot
+          fill = ifelse(Brand == "Starbucks", "C", "D")),            #specifying seperate bar colours 
+          position = "dodge", stat="identity",                       #specifying a grouped barplot
+          width = 0.8, alpha=.5,                                     #altering bar width and transparancy, 
+          show.legend = FALSE) +                                     #hiding default legend
+  geom_bar(aes(fill = ifelse(Brand == "Starbucks", "A", "B")),       #adding caffeine barplot, specifying colours
+           position = "dodge", stat = "identity",                    #making it a grouped barplot
+           width = 0.5,                                              #narrowing bar width to better see plot bars
+           show.legend = FALSE) +                                    #hiding default legend 
+  scale_y_continuous(name = "Caffeine (mg)",                         #naming left y-axis
+                     breaks = seq(0, 500, by = 50),                  #changing breaks on axis (range, frequency)
+                     limits = c(0, 670), expand =c(0,0),             #making space for legends 
+                                                                     #and removing space between graph and axis
+    sec.axis = sec_axis(~.*1, name="Volume (mL)",                    #adding secondary y-axis 
+               breaks = seq(0, 500, by = 50))) +                     #and specyfing axis breaks
+  ggtitle("Costa VS Starbucks: Caffeine & Size") +                   #creating the title
+  labs(x = "Type of Coffee*",                                        #labelling the x-axis
+      subtitle = "Europe & UK, 2023",                                #creating the subtitle 
+      caption = "*Takeaway, Standard/Medium Size") +                 #and caption for the x-axis title label      
+  scale_fill_manual(values = c("A" = "#1b703f", "B" = "#B91345",     #specifying colours for the types of bars
+                               "C" = "#63330b", "D" = "#996633")) +      
+  theme(aspect.ratio = 3/5,                                          #setting the proportions of the plot 
+        panel.grid.major = element_blank(),                          #removing the plot grid
         panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        axis.line = element_line(colour = "black", size = 1), 
-        axis.text.x = element_text(angle = 50, vjust = 0.5,  
-        hjust = 1, margin = margin(t = -30)),
-        axis.title.x = element_text(margin = margin(t = 50), size = 12),
-        axis.title.y = element_text(margin = margin(r = 15)),
-        axis.title.y.right = element_text(margin = unit(c(0, 0, 0, 5), 'mm'))) +
-   annotation_raster(Starbucks_image, xmin = 0.73, xmax = 1.39, 
-      ymin = 521, ymax = 573) +
-   annotation_raster(Costa_image, xmin = 0.491, xmax = 1.63, 
-      ymin = 578, ymax = 630) +
-   annotation_raster(starbucks_cup, xmin = 13.5, xmax = 14.5, 
-      ymin = 515, ymax = 570) +
-   annotation_raster(costa_cup, xmin = 13.5, xmax = 14.5, 
-      ymin = 575, ymax = 630) +
-   annotate("text", x = 1.7:1.7, y = c(550, 605), label = c("Starbucks", "Costa"), hjust = 0) +
-   annotate("text", x = 13.5:13.5, y = c(543, 603), label = c("Starbucks", "Costa"), hjust = 1) +
-   annotate("text", x = 0.8, y = 659, label = "Brand", hjust = 0, fontface = "bold") +
-   annotate("text", x = 14.2, y = 658, label = "Brand Volume", hjust = 1, fontface = "bold") +
-   ggtitle("Costa VS Starbucks: Caffeine & Size") +
-    labs(subtitle = "Europe & UK, 2023", caption = "*Takeaway, Standard/Medium Size") +
-      theme(plot.title = element_text(margin = margin(b = 6), hjust = 0.5, size = 14, face = "bold"),
-            plot.subtitle = element_text(margin = margin
-            (b = 20), size = 11, hjust = 0.5),
-            plot.margin = unit(c(1,1,2,1), "cm"),
-            plot.caption = element_text(margin = margin
-            (t = 10), color = "#6e6e6e", face = "italic", hjust = 0.5))  
-            
-#Display the plot
-print(ggp)  
+        panel.background = element_blank(),                          #removing the plot background
+        plot.margin = unit(c(1,1,2,1), "cm"),                        #altering the plot margin around the plot
+        axis.line = element_line(colour = "black", size = 1),        #changing colour + thickness of axis lines
+        axis.text.x = element_text(angle = 50, vjust = 0.5,          #adjusting x-axis break labels: direction,
+        hjust = 1, margin = margin(t = -30)),                        #alignment and distance from the axis          
+        axis.title.x = element_text(margin = margin(t = 50),         #adjusting x-axis label title: distance
+                                    size = 12),                      #from the axis and text size                
+        axis.title.y = element_text(margin = margin(r = 15)),        #adjusting left y-axis label: distance       
+        axis.title.y.right = element_text(margin = unit              #adjusting right y-axis label: distance 
+                                         (c(0, 0, 0, 5), 'mm')),     #(from the axis)                         
+        plot.title = element_text(margin = margin(b = 6),            #altering plot title aesthetics: distance,
+                     hjust = 0.5, size = 14, face = "bold"),         #alignment, size and making it bold
+        plot.subtitle = element_text(margin = margin (b = 20),       #changing subtitle aesthetics: distance,
+                        size = 11, hjust = 0.5),                     #size and alignment
+        plot.caption = element_text(margin = margin (t = 10),        #altering the captions axis distance,
+                       color = "#6e6e6e", face = "italic",           #color, italicizing 
+                       hjust = 0.5)) +                               #and shifting the alignment
+#
+                                                                     #creating my own legend:        
+   annotation_raster(Starbucks_image, xmin = 0.73, xmax = 1.39,       #adding Starbucks logo + coordinates
+                                      ymin = 521, ymax = 573) +
+   annotation_raster(Costa_image, xmin = 0.491, xmax = 1.63,          #adding Costa logo + coordinates
+                                  ymin = 578, ymax = 630) +
+   annotation_raster(starbucks_cup, xmin = 13.5, xmax = 14.5,         #adding cup icon for Starbucks Volume 
+                                    ymin = 515, ymax = 570) +         #plus coordinates         
+   annotation_raster(costa_cup, xmin = 13.5, xmax = 14.5,             #adding cup icon for Costa Volume 
+                                ymin = 575, ymax = 630) +             #plus coordinates
+   annotate("text", x = 1.7:1.7, y = c(550, 605),                     #adding legend text on the left
+            label = c("Starbucks", "Costa"), hjust = 0) +             
+   annotate("text", x = 13.5:13.5, y = c(543, 603),                   #adding legend text on the right
+            label = c("Starbucks", "Costa"), hjust = 1) +           
+   annotate("text", x = 0.8, y = 659, label = "Brand",                #adding legend title on the left
+            hjust = 0, fontface = "bold") +                           #(including making it bold)
+   annotate("text", x = 14.2, y = 658, label = "Brand Volume",        #adding legend title on the right
+            hjust = 1, fontface = "bold")                             #(including making it bold)
+
+
+#Display the plot  
+print(ggp) 
+```
 
 # Summary
 Brief thoughts on what you have learnt, what you might do next if you had more time / more data  
