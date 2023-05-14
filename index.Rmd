@@ -1,47 +1,21 @@
 ---
 title: "PSY6422 - Data Management and Visualisation Project"
-author: "220251464"
-date: "`r Sys.Date()`"
+author: "ID: 220251464"
 output: html_document
 ---
-#![](Figures/image.png) to insert a photo in RMD file
-
-## Background
-
+#![](Figures/image.png) to insert a photo in RMD file  
+#enable github pages
+  
+# Background
+  
 ## Data Origins
-        Answering questions of where it comes from, how it was collected, what the variables mean, etc
-        show the first few rows of the raw data, if possible
+Answering questions of where it comes from, how it was collected, what the variables mean, etc
+show the first few rows of the raw data, if possible  
         
-## Research Questions
-        in plain english, a simple statement of what question(s) your visulisation will attempt to address
+# Research Questions
+in plain English, a simple statement of what question(s) your visualisation will attempt to address  
 
-### Project Aim 
-        
-## Data Preparation
-### Loading packages
-### Combining data
-### Cleaning the data
-steps taken to clean the data, exclude outliers, create summary statistics, grouped variables, etc
-show the first few rows of the processed data, if possible
-showing the code which does this were relevant
-
-## Visualisation
-graph or graphs documentation explaining any motivation (although good graph labelling is better than explanation in the accompanying text)
-code for producing them
-
-### Load new custom font for showtext package
-font_add_google(name = "Source Sans Pro", family = "Source Sans Pro")
-
-showtext_auto() 
-#Automatically use showtext for all plots
-
-##Summary
-Brief thoughts on what you have learnt, what you might do next if you had more time / more data
-        
-----------------------------------------------------------------------
-# TO DO
-## enable github pages
-
+# Data Preparation
 ## My Libraries
 #Load packages
 library(tidyverse)
@@ -53,47 +27,61 @@ library(grid)
 library(dplyr)
 library(scales)
 library(showtext)
-library(here)
+library(here)  
 
-## Procedure
+## Cleaning the data
+steps taken to clean the data, exclude outliers, create summary statistics, grouped variables, etc
+show the first few rows of the processed data, if possible
+showing the code which does this were relevant  
+
 #Specify image relative paths for logos and legend icons
 Starbucks_image <- readPNG((here::here("images", "starbucks_logo.png")), native = TRUE)
-Costa_image <- readPNG((here::here("images", "costa_logo.png")), native = TRUE)
+Costa_image <- readPNG((here::here("images", "costa_logo.png")), native = TRUE)  
 
 starbucks_cup <- readPNG((here::here("images", "starbucks_cup.png")), native = TRUE)
-costa_cup <- readPNG((here::here("images", "costa_cup.png")), native = TRUE)
+costa_cup <- readPNG((here::here("images", "costa_cup.png")), native = TRUE)  
 
 #Print raw data
-print(DAAVDATA)
+print(DAAVDATA)  
 
 #Create clean dataframe
 df <- data.frame(
   Type.of.Coffee = c(rep(DAAVDATA$'Type of coffee', 2)),
   Brand = rep(c("Starbucks" , "Costa"), 14),
   Caffeine = c(DAAVDATA$`Caffeine (mg) Starbucks`, DAAVDATA$`Caffeine (mg) Costa`),
-  Volume = c(DAAVDATA$`Volume (mL) Starbucks`, DAAVDATA$`Volume (mL) Costa`))
+  Volume = c(DAAVDATA$`Volume (mL) Starbucks`, DAAVDATA$`Volume (mL) Costa`))  
 
 #Define the desired orders
 order_list <- c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14)
-order_list2 <- c(1, 15, 2, 16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12, 26, 13, 27, 14, 28)
+order_list2 <- c(1, 15, 2, 16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12, 26, 13, 27, 14, 28)  
 
-# Define a function to reorder a vector based on an order list
+#Define a function to reorder a vector based on an order list
 reorder_vec <- function(vec, order_list) {
-  vec[order_list]}
+  vec[order_list]}  
 
-# Reorder the columns using the reorder_vec function
+#Reorder the columns using the reorder_vec function
 df <- df %>%
   mutate(Type.of.Coffee = reorder_vec(Type.of.Coffee, order_list),
          Caffeine = reorder_vec(Caffeine, order_list2), 
-         Volume = reorder_vec(Volume, order_list2))
+         Volume = reorder_vec(Volume, order_list2))  
 
 #Print Clean data frame
-print(df)
+print(df)  
 
 #Specify order of Coffee
-df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = unique(df$Type.of.Coffee), ordered = TRUE)
+df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = unique(df$Type.of.Coffee), ordered = TRUE)  
 
-#Create Plot
+# Visualisation
+graph or graphs documentation explaining any motivation (although good graph labelling is better than explanation in the accompanying text)
+code for producing them  
+
+#Load new custom font for showtext package
+font_add_google(name = "Source Sans Pro", family = "Source Sans Pro")  
+
+showtext_auto()
+#Automatically use showtext for all plots  
+
+## The Plot
 ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
   geom_bar(aes(y = Volume / 1, fill = ifelse(Brand == "Starbucks", "C", "D")), 
            position = "dodge", stat="identity", width = 0.8, alpha=.5, show.legend = FALSE) +
@@ -132,9 +120,15 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
             (b = 20), size = 11, hjust = 0.5),
             plot.margin = unit(c(1,1,2,1), "cm"),
             plot.caption = element_text(margin = margin
-            (t = 10), color = "#6e6e6e", face = "italic", hjust = 0.5))
+            (t = 10), color = "#6e6e6e", face = "italic", hjust = 0.5))  
             
-## Display the plot
-print(ggp)
+#Display the plot
+print(ggp)  
+
+# Summary
+Brief thoughts on what you have learnt, what you might do next if you had more time / more data  
+
+
+
 
 
