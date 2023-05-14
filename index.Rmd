@@ -1,53 +1,46 @@
 ---
-title: "220251464"
-author: "Mathilde Klitgaard"
+title: "PSY6422 - Data Management and Visualisation Project"
+author: "220251464"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+#![](Figures/image.png) to insert a photo in RMD file
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+## Background
 
-## R Markdown
-For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-## I <3 COFFEE
-
-## Plot
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-----------------------------------------------
-
- Data Origins
+## Data Origins
         Answering questions of where it comes from, how it was collected, what the variables mean, etc
         show the first few rows of the raw data, if possible
-    Research Questions
+        
+## Research Questions
         in plain english, a simple statement of what question(s) your visulisation will attempt to address
-    Data Preparation
-        steps taken to clean the data, exclude outliers, create summary statistics, grouped variables, etc
-        show the first few rows of the processed data, if possible
-        showing the code which does this were relevant
-    Visualisation(s)
-        graph or graphs
-        documentation explaining any motivation (although good graph labelling is better than explanation in the accompanying text)
-        code for producing them
-    Summary
-        Brief thoughts on what you have learnt, what you might do next if you had more time / more data
+
+### Project Aim 
+        
+## Data Preparation
+### Loading packages
+### Combining data
+### Cleaning the data
+steps taken to clean the data, exclude outliers, create summary statistics, grouped variables, etc
+show the first few rows of the processed data, if possible
+showing the code which does this were relevant
+
+## Visualisation
+graph or graphs documentation explaining any motivation (although good graph labelling is better than explanation in the accompanying text)
+code for producing them
+
+### Load new custom font for showtext package
+font_add_google(name = "Source Sans Pro", family = "Source Sans Pro")
+
+showtext_auto() 
+#Automatically use showtext for all plots
+
+##Summary
+Brief thoughts on what you have learnt, what you might do next if you had more time / more data
         
 ----------------------------------------------------------------------
-## TO DO
-#enable github pages
-#![](Figures/image.png) to insert a photo in RMD file
-#needs RELATIVE PATHs 
+# TO DO
+## enable github pages
 
 ## My Libraries
 #Load packages
@@ -59,16 +52,18 @@ library(RCurl)
 library(grid)
 library(dplyr)
 library(scales)
+library(showtext)
+library(here)
 
 ## Procedure
-#Specify image paths and create logos
-Starbucks_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/starbucks_logo.png", native = TRUE)
-Costa_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/costa_logo.png", native = TRUE)
+#Specify image relative paths for logos and legend icons
+Starbucks_image <- readPNG((here::here("images", "starbucks_logo.png")), native = TRUE)
+Costa_image <- readPNG((here::here("images", "costa_logo.png")), native = TRUE)
 
-starbucks_cup <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/starbucks_cup.png", native = TRUE)
-costa_cup <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/costa_cup.png", native = TRUE)
+starbucks_cup <- readPNG((here::here("images", "starbucks_cup.png")), native = TRUE)
+costa_cup <- readPNG((here::here("images", "costa_cup.png")), native = TRUE)
 
-#Print raw dataframe
+#Print raw data
 print(DAAVDATA)
 
 #Create clean dataframe
@@ -82,11 +77,15 @@ df <- data.frame(
 order_list <- c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14)
 order_list2 <- c(1, 15, 2, 16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12, 26, 13, 27, 14, 28)
 
-#Re-order the columns using the order_lists
+# Define a function to reorder a vector based on an order list
+reorder_vec <- function(vec, order_list) {
+  vec[order_list]}
+
+# Reorder the columns using the reorder_vec function
 df <- df %>%
-  mutate(Type.of.Coffee = Type.of.Coffee[order_list],
-  Caffeine = Caffeine[order_list2], 
-  Volume = Volume[order_list2])
+  mutate(Type.of.Coffee = reorder_vec(Type.of.Coffee, order_list),
+         Caffeine = reorder_vec(Caffeine, order_list2), 
+         Volume = reorder_vec(Volume, order_list2))
 
 #Print Clean data frame
 print(df)
@@ -108,10 +107,10 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
         panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
-        axis.line = element_line(colour = "black"), 
+        axis.line = element_line(colour = "black", size = 1), 
         axis.text.x = element_text(angle = 50, vjust = 0.5,  
         hjust = 1, margin = margin(t = -30)),
-        axis.title.x = element_text(margin = margin(t = 43), size = 12),
+        axis.title.x = element_text(margin = margin(t = 50), size = 12),
         axis.title.y = element_text(margin = margin(r = 15)),
         axis.title.y.right = element_text(margin = unit(c(0, 0, 0, 5), 'mm'))) +
    annotation_raster(Starbucks_image, xmin = 0.73, xmax = 1.39, 
@@ -127,14 +126,15 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
    annotate("text", x = 0.8, y = 659, label = "Brand", hjust = 0, fontface = "bold") +
    annotate("text", x = 14.2, y = 658, label = "Brand Volume", hjust = 1, fontface = "bold") +
    ggtitle("Costa VS Starbucks: Caffeine & Size") +
-    labs(subtitle = "Europe & UK, 2023") +
+    labs(subtitle = "Europe & UK, 2023", caption = "*Takeaway, Standard/Medium Size") +
       theme(plot.title = element_text(margin = margin(b = 6), hjust = 0.5, size = 14, face = "bold"),
             plot.subtitle = element_text(margin = margin
             (b = 20), size = 11, hjust = 0.5),
-            plot.margin = unit(c(1,1,2,1), "cm"))
+            plot.margin = unit(c(1,1,2,1), "cm"),
+            plot.caption = element_text(margin = margin
+            (t = 10), color = "#6e6e6e", face = "italic", hjust = 0.5))
             
 ## Display the plot
 print(ggp)
 
-#*TAKEAWAY, STANDARD OR MEDIUM SIZE
 
