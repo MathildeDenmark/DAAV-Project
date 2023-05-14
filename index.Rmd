@@ -26,13 +26,28 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 ----------------------------------------------
+
+ Data Origins
+        Answering questions of where it comes from, how it was collected, what the variables mean, etc
+        show the first few rows of the raw data, if possible
+    Research Questions
+        in plain english, a simple statement of what question(s) your visulisation will attempt to address
+    Data Preparation
+        steps taken to clean the data, exclude outliers, create summary statistics, grouped variables, etc
+        show the first few rows of the processed data, if possible
+        showing the code which does this were relevant
+    Visualisation(s)
+        graph or graphs
+        documentation explaining any motivation (although good graph labelling is better than explanation in the accompanying text)
+        code for producing them
+    Summary
+        Brief thoughts on what you have learnt, what you might do next if you had more time / more data
+        
+----------------------------------------------------------------------
 ## TO DO
-#change rmd file name to Student ID
 #enable github pages
 #![](Figures/image.png) to insert a photo in RMD file
 #needs RELATIVE PATHs 
-
-install.packages("knitr","rmarkdown")
 
 ## My Libraries
 #Load packages
@@ -122,6 +137,4 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
 print(ggp)
 
 #*TAKEAWAY, STANDARD OR MEDIUM SIZE
-
-
 
