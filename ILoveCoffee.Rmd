@@ -1,5 +1,5 @@
 ---
-title: "PSY6422 Project"
+title: "220251464"
 author: "Mathilde Klitgaard"
 date: "`r Sys.Date()`"
 output: html_document
@@ -10,32 +10,31 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## R Markdown
+For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+You can embed an R code chunk like this:
 
 ```{r cars}
 summary(cars)
 ```
+## I <3 COFFEE
 
-## Including Plots
-
-You can also embed plots, for example:
-
+## Plot
 ```{r pressure, echo=FALSE}
 plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
 ----------------------------------------------
-#TITLE: I <3 COFFEE
+## TO DO
 #change rmd file name to Student ID
 #enable github pages
-
 #![](Figures/image.png) to insert a photo in RMD file
+#needs RELATIVE PATHs 
 
+install.packages("knitr","rmarkdown")
+
+## My Libraries
 #Load packages
 library(tidyverse)
 library(gapminder)
@@ -46,38 +45,38 @@ library(grid)
 library(dplyr)
 library(scales)
 
-# Specify image paths and create logos
-#needs RELATIVE PATH 
+## Procedure
+#Specify image paths and create logos
 Starbucks_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/starbucks_logo.png", native = TRUE)
 Costa_image <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/costa_logo.png", native = TRUE)
 
 starbucks_cup <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/starbucks_cup.png", native = TRUE)
 costa_cup <- readPNG("C:/Users/Mathi/OneDrive/Dokumenter/UNIVERSITY/DAAV Project 2023/DAAVProject/costa_cup.png", native = TRUE)
 
-# Print raw dataframe
+#Print raw dataframe
 print(DAAVDATA)
 
-# Create clean dataframe
+#Create clean dataframe
 df <- data.frame(
   Type.of.Coffee = c(rep(DAAVDATA$'Type of coffee', 2)),
   Brand = rep(c("Starbucks" , "Costa"), 14),
   Caffeine = c(DAAVDATA$`Caffeine (mg) Starbucks`, DAAVDATA$`Caffeine (mg) Costa`),
   Volume = c(DAAVDATA$`Volume (mL) Starbucks`, DAAVDATA$`Volume (mL) Costa`))
 
-# Define the desired orders
+#Define the desired orders
 order_list <- c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14)
 order_list2 <- c(1, 15, 2, 16, 3, 17, 4, 18, 5, 19, 6, 20, 7, 21, 8, 22, 9, 23, 10, 24, 11, 25, 12, 26, 13, 27, 14, 28)
 
-# Re-order the columns using the order_lists
+#Re-order the columns using the order_lists
 df <- df %>%
   mutate(Type.of.Coffee = Type.of.Coffee[order_list],
   Caffeine = Caffeine[order_list2], 
   Volume = Volume[order_list2])
 
-# Print Clean data frame
+#Print Clean data frame
 print(df)
 
-# Specify order of Coffee
+#Specify order of Coffee
 df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = unique(df$Type.of.Coffee), ordered = TRUE)
 
 #Create Plot
@@ -119,7 +118,7 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +
             (b = 20), size = 11, hjust = 0.5),
             plot.margin = unit(c(1,1,2,1), "cm"))
             
-# Display the plot
+## Display the plot
 print(ggp)
 
 #*TAKEAWAY, STANDARD OR MEDIUM SIZE
