@@ -1,25 +1,51 @@
 ---
-title: "PSY6422 - Project"
+title: "**PSY6422 - Project**"
 author: "ID: 220251464"
+date: '2023-05-16'
 output: html_document
 ---
-![drinks image](images/drinks_image.png)
-#enable github pages
-#saves key visualisations as files
 
-# Background
+![](images/drinks_image.png)
+
+<center> 
+# **STARBUCKS  &  COSTA COFFEE** 
+</center>
+
+#enable github pages (a single clickable link which displays the markdown pages)
+#saves key visualisations as files
+#code rationale clearly and surcinctly explained
+
+## **Background**
   
-## Data Origins
+### Data Origins
 Answering questions of where it comes from, how it was collected, what the variables mean, etc
 show the first few rows of the raw data, if possible  
+data source fully acknowledged, including details on data collection which are relevant to intepretation
+  full permanent citation
+
+### Project Organization
+
+The /data folder contains data required for the project, and /images contains images required for the project, as well as visualization outputs.
+
+A codebook describing all labels and abbrevations used in this project for data, variables, functions etc. within this project is located at /codebook.xlsx.
         
-# Research Questions
+### **Research Questions**
 in plain English, a simple statement of what question(s) your visualisation will attempt to address  
 
-# Data Preparation
-## My Libraries
-#Load packages
-```{r}.
+## **Data Preparation**
+### Loading packages
+
+The project utilized the renv package to retain package versions, safeguarding it from potential updates to packages in the future.
+
+Package versions used in this project are listed within the file /renv.lock
+
+```{r loadlib, echo = TRUE, results = 'hide', warning = FALSE, message = FALSE}
+#Load packages with renv
+install.packages("renv")
+library(renv)
+renv::restore()
+
+#Import packages
 library(tidyverse)
 library(gapminder)
 library(ggplot2)
@@ -30,12 +56,14 @@ library(dplyr)
 library(scales)
 library(showtext)
 library(here)  
+library(readxl)
+library(knitr)
 ```
 
 ## Cleaning the data
 steps taken to clean the data, exclude outliers, create summary statistics, grouped variables, etc
 show the first few rows of the processed data, if possible
-showing the code which does this were relevant  
+showing the code which does this where relevant  
 
 ```{r}.
 #Specify image relative paths for logos and legend icons
@@ -45,9 +73,10 @@ Costa_image <- readPNG((here::here("images", "costa_logo.png")), native = TRUE)
 starbucks_cup <- readPNG((here::here("images", "starbucks_cup.png")), native = TRUE)
 costa_cup <- readPNG((here::here("images", "costa_cup.png")), native = TRUE)  
 ```
-```{r}.
-#Print raw data
-print(DAAVDATA)
+```{r results = TRUE}
+#Read raw data
+rawdata <- read_excel(here::here("data","DAAVDATA.xlsx"))
+print(rawdata)
 ``` 
 
 ```{r}.
@@ -58,7 +87,6 @@ df <- data.frame(
   Caffeine = c(DAAVDATA$`Caffeine (mg) Starbucks`, DAAVDATA$`Caffeine (mg) Costa`),
   Volume = c(DAAVDATA$`Volume (mL) Starbucks`, DAAVDATA$`Volume (mL) Costa`))
 ```  
-
 ```{r}.
 #Define the desired orders
 order_list <- c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14)
@@ -73,29 +101,41 @@ df <- df %>%
   mutate(Type.of.Coffee = reorder_vec(Type.of.Coffee, order_list),
          Caffeine = reorder_vec(Caffeine, order_list2), 
          Volume = reorder_vec(Volume, order_list2))  
-
-
-#Print Clean data frame 
-print(df)  
-
+         
 #Specify order of Coffee  
 df$Type.of.Coffee <- factor(df$Type.of.Coffee, levels = unique(df$Type.of.Coffee), ordered = TRUE)  
 ```
 
-# Visualisation
+```{r results = TRUE}
+#Print Clean data frame 
+print(df)  
+``` 
+
+## **Visualisation**
 graph or graphs documentation explaining any motivation (although good graph labelling is better than explanation in the accompanying text)
 code for producing them  
+alignment between visualisation question(s) and visualisation(s) such that the question is addressed and new insights provided (explains and justifies choice of chart (type,style, etc))
+
+### Colours
+
+Colours of bars in the visualization correspond to iconic colours of the brands, for the Caffeine content, increasing glance value for those familiar with brands. This is important as those most likely to be interested in the data are those familiar with the brands.  Additionally, for better clarity, the bars corresponding to the drink Volume, are coloured coffee-like colours, a light contrast with the Caffeine bars is ensured by slightly fading them and brands are differentiated by the two different hues of brown. 
+
+### Custom Text
+
+Using the showtext package, a personalized text was imported and incorporated into the visualization. The chosen font closely resembles the fonts employed by the two brands, thereby enhancing the professional appearance and overall attractiveness of the visualization.
 
 ```{r}.
 font_add_google(name = "Source Sans Pro", family = "Source Sans Pro") 
 #Load new custom font for showtext package  
 
 showtext_auto()
-#Automatically use showtext for all plots  
+#Automatically use showtext for plot 
 ```
 
-## The Plot
+### Design
+
 ```{r}.
+#Plot graph and customize various plot aesthetics
 ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +   #creating baseplot
   geom_bar(aes(y = Volume / 1,                                       #adding volume barplot
           fill = ifelse(Brand == "Starbucks", "C", "D")),            #specifying seperate bar colours 
@@ -123,10 +163,10 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +   #creating b
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(),                          #removing the plot background
         plot.margin = unit(c(1,1,2,1), "cm"),                        #altering the plot margin around the plot
-        axis.line = element_line(colour = "black", size = 1),        #changing colour + thickness of axis lines
+        axis.line = element_line(colour = "black", linewidth = 1),   #changing colour + thickness of axis lines
         axis.text.x = element_text(angle = 50, vjust = 0.5,          #adjusting x-axis break labels: direction,
         hjust = 1, margin = margin(t = -30)),                        #alignment and distance from the axis          
-        axis.title.x = element_text(margin = margin(t = 50),         #adjusting x-axis label title: distance
+        axis.title.x = element_text(margin = margin(t = 70),         #adjusting x-axis label title: distance
                                     size = 12),                      #from the axis and text size                
         axis.title.y = element_text(margin = margin(r = 15)),        #adjusting left y-axis label: distance       
         axis.title.y.right = element_text(margin = unit              #adjusting right y-axis label: distance 
@@ -135,7 +175,7 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +   #creating b
                      hjust = 0.5, size = 14, face = "bold"),         #alignment, size and making it bold
         plot.subtitle = element_text(margin = margin (b = 20),       #changing subtitle aesthetics: distance,
                         size = 11, hjust = 0.5),                     #size and alignment
-        plot.caption = element_text(margin = margin (t = 10),        #altering the captions axis distance,
+        plot.caption = element_text(margin = margin (t = 10),        #altering the captions margin,
                        color = "#6e6e6e", face = "italic",           #color, italicizing 
                        hjust = 0.5)) +                               #and shifting the alignment
 #
@@ -156,13 +196,26 @@ ggp <- ggplot(df, aes(fill=Brand, y=Caffeine, x=Type.of.Coffee)) +   #creating b
             hjust = 0, fontface = "bold") +                           #(including making it bold)
    annotate("text", x = 14.2, y = 658, label = "Brand Volume",        #adding legend title on the right
             hjust = 1, fontface = "bold")                             #(including making it bold)
-
-
-#Display the plot  
-print(ggp) 
 ```
 
-# Summary
+### Saving Visualisation
+```{r eval = FALSE, message = FALSE}
+#Save plot to images folder
+windows(width = 1000, height = 800) #Open windows graphics device
+print(ggp)
+dev.print(file = here("images", "StarbucksVSCosta_Graph.png"), device = png, width = 1000, height = 800)
+```
+
+
+
+### Result
+![](images/StarbucksVSCosta_Graph.png)
+
+## Interpretation & Future Direction
+Notes on intepretation are provided
+Notes on possible extensions or follow-ups are provided
+
+## **Summary**
 Brief thoughts on what you have learnt, what you might do next if you had more time / more data  
 
 
