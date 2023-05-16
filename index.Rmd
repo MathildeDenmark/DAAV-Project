@@ -253,13 +253,13 @@ graph <- ggp +
 #Save plot to images folder
 windows(width = 1000, height = 800) #Open windows graphics device
 print(graph)
-dev.print(file = here("images", "StarbucksVSCosta_Graph.png"), device = png, 
+dev.print(file = here("images", "viz220251464.png"), device = png, 
           width = 1000, height = 800)
 ```
 
 
 ### Result
-![](images/StarbucksVSCosta_Graph.png)
+![](images/viz220251464.png)
 
 ## Interpretation & Future Direction
 
