@@ -3,6 +3,7 @@ title: "**PSY6422 - Project**"
 author: 'ID: 220251464'
 date: "2023-05-16"
 output:
+  pdf_document: default
   html_document: default
 ---
 
