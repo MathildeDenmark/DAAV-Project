@@ -162,7 +162,7 @@ The brighter logo-colours where chosen to represent Caffeine to draw more attent
 
 The decision to use grouped barcharts with two y-axis was based on the fact that this would best visualise the contrast between the two brands for both the caffeine content *and* the drink size difference. Especially, due to the fact that a small drink can still have a lot of caffeine and vice versa. Decaf coffee was especially included to reflect this and for the same reason, it was placed first on the x-axis as a point of comparison.  
 The rest of the data was ordered on the basis of least to most caffeine for *both* of the Brands, for each type of coffee. Meaning, although Costa Cold Brew had a higher caffeine content than Costa Cortado, Starbucks Cold Brew did not have a higher caffeine content than Starbucks Cortado, so, Cold brew is put first on the x-axis. The volume data is dependent on the type of drink for each brand and is therefore ordered based on the caffeine data.
-Descriptive labels were included to be able to gain an understanding from the visualisation, if it were to be presented on its own.
+Descriptive labels were included to be able to gain an understanding from the visualisation if it were to be presented on its own.
 
 ```{r warning=FALSE, message=FALSE}
 #Plot graph and customize various plot aesthetics
